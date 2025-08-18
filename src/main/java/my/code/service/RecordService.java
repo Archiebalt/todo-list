@@ -1,10 +1,12 @@
 package my.code.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import my.code.dao.RecordRepository;
 import my.code.entity.Record;
 import my.code.entity.RecordStatus;
@@ -16,14 +18,11 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@RequiredArgsConstructor
 public class RecordService {
     
-    private final RecordRepository recordRepository;
-
-    @Autowired
-    public RecordService(RecordRepository recordRepository) {
-        this.recordRepository = recordRepository;
-    }
+    RecordRepository recordRepository;
 
     @Transactional(readOnly = true)
     public RecordsContainerDto findAllRecords(String filterMode) {
@@ -46,16 +45,12 @@ public class RecordService {
                 .collect(Collectors.toList());
 
         if (allowedFilterModes.contains(filterModeInUpperCase)) {
-
             List<Record> filteredRecords = records.stream()
                     .filter(record -> record.getStatus() == RecordStatus.valueOf(filterModeInUpperCase))
                     .collect(Collectors.toList());
             return new RecordsContainerDto(filteredRecords, numberOfDoneRecords, numberOfActiveRecords);
-
         } else {
-
             return new RecordsContainerDto(records, numberOfDoneRecords, numberOfActiveRecords);
-       
         }
     }
 
@@ -72,4 +67,5 @@ public class RecordService {
     public void deleteRecord(int id) {
         recordRepository.deleteById(id);
     }
+    
 }

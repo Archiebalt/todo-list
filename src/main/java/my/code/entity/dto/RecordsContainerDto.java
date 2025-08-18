@@ -12,11 +12,11 @@ import my.code.entity.Record;
 @Getter
 @Setter
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class RecordsContainerDto {
 
-    final List<Record> records;
-    final int numberOfDoneRecords;
-    final int numberOfActiveRecords;
+    List<Record> records;
+    int numberOfDoneRecords;
+    int numberOfActiveRecords;
     
 }
