@@ -4,7 +4,7 @@ COPY pom.xml .
 COPY src ./src
 RUN mvn clean package
 
-FROM bellsoft/liberica-openjdk-alpine:17-cds
+FROM bellsoft/liberica-openjdk-alpine-musl:17
 WORKDIR /app
 COPY --from=builder /build/target/*.jar app.jar
 EXPOSE 8080
