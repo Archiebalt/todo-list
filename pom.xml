@@ -22,6 +22,7 @@
 		<java.version>17</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<postgresql.version>42.7.7</postgresql.version>
 		<junit-jupiter.version>5.9.3</junit-jupiter.version>
 		<mockito.version>5.3.1</mockito.version>
 		<jacoco.version>0.8.8</jacoco.version>
@@ -44,9 +45,15 @@
 
 		<!-- Database -->
 		<dependency>
+			<groupId>org.hibernate.validator</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>9.0.0.Final</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<scope>runtime</scope>
+			<version>${postgresql.version}</version>
 		</dependency>
 
 		<!-- Lombok -->
