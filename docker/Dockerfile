@@ -1,33 +1,9 @@
-FROM eclipse-temurin:17 as app-build
-ENV RELEASE=17
+FROM eclipse-temurin:17-jre-alpine
 
-WORKDIR /opt/build
-COPY ./target/*.jar ./application.jar
-
-RUN java -Djarmode=tools -jar application.jar extract
-RUN $JAVA_HOME/bin/jlink \
-         --add-modules `jdeps --ignore-missing-deps -q -recursive --multi-release ${RELEASE} --print-module-deps -cp 'dependencies/BOOT-INF/lib/*' application.jar` \
-         --strip-debug \
-         --no-man-pages \
-         --no-header-files \
-         --compress=2 \
-         --output jdk
-
-FROM debian:buster-slim
-
-ARG BUILD_PATH=/opt/build
-ENV JAVA_HOME=/opt/jdk
-ENV PATH "${JAVA_HOME}/bin:${PATH}"
-
-RUN groupadd --gid 1000 spring-app \
-  && useradd --uid 1000 --gid spring-app --shell /bin/bash --create-home spring-app
-
+RUN addgroup -g 1000 spring-app && adduser -u 1000 -G spring-app -D spring-app
 USER spring-app:spring-app
+
 WORKDIR /opt/workspace
+COPY target/*.jar app.jar
 
-COPY --from=app-build $BUILD_PATH/jdk $JAVA_HOME
-COPY --from=app-build $BUILD_PATH/spring-boot-loader/ ./
-COPY --from=app-build $BUILD_PATH/dependencies/ ./
-COPY --from=app-build $BUILD_PATH/application/ ./
-
-ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]
+ENTRYPOINT ["java", "-jar", "/opt/workspace/app.jar"]
